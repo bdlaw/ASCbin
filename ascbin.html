@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ASC Bin</title>
+<meta charset="utf-8" />
+ <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+ <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/themes/smoothness/jquery-ui.css" />
+
+<style>
+	body {
+		margin:0;
+		padding:0;
+		font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+		font-weight: 300;
+	}
+
+	#menuBar { 
+		width: 100%;
+		height: 40px;
+		background-color: #e0e0e0;
+		border-bottom: 1px solid grey;
+		}
+	#logo {
+		padding: 5px 0 0 20px;
+		font-weight: bold;
+		font-size: 120%;
+		float: left;
+
+	}
+	#buttonDiv {
+		padding: 5px 10px 0 0;
+		float: right;
+	}
+	#runButton {
+		font-size: 120%;
+	}
+
+	#toggles {
+		width: 194px;
+		margin: 0 auto;
+		list-style: none;
+		border: 1px solid grey;
+		border-radius: 3px;
+		height: 27px;
+		padding: 0;
+		position: relative;
+		top: 5px;
+
+	}
+	
+	#toggles li {
+		float: left;
+		border-right: 1px solid grey;
+		padding: 5px 7px;
+	}
+	#toggles li:last-child {
+		border-right: none;
+	}
+	.clear {
+		clear: both;
+	}
+	.codeContainer {
+		height: 100%;
+		width: 25%;
+		float: left;
+		position: relative;
+	}
+	.codeContainer textarea{
+		width: 100%;
+		height: 100%;
+		background-color: #FAFAFA;
+		border: none;
+		border-right: 1px solid #EDEDE5;
+		font-family: monotype;
+		font-size: 90%;
+		-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  		-moz-box-sizing: border-box;    /* Firefox, other Gecko */
+		box-sizing: border-box; /* Opera/IE 8+ */
+		padding: 5px;
+	}
+	.codeLabel {
+		position: absolute;
+		right: 10px;
+		top: 10px;
+	}
+	#CSSContainer, #JSContainer {
+		display: none;
+	}
+	iframe {
+		height: 100%;
+		position: right;
+		left:20px;
+		border: none;
+	}
+	.selected {
+		background-color: grey;
+	}
+
+</style>
+</head>
+<body>
+<div id="wrapper">
+
+	<div id="menuBar">
+		<div id="logo">
+			ASC Bin
+		</div>
+		<div id="buttonDiv">
+			<button id="runButton">Run</button>
+
+		</div>
+		<ul id="toggles">
+		<li class="toggle selected">HTML</li>
+		<li class="toggle">CSS</li>
+		<li class="toggle">JS</li>
+		<li class="toggle selected">Result</li>
+		</ul>
+	</div>
+	<div class="clear"></div>
+	<div id="HTMLContainer" class="codeContainer">
+		<div class="codeLabel">HTML</div>
+		<textarea id="html"><div id="test"></div></textarea>
+	</div>
+	<div id="CSSContainer" class="codeContainer">
+	<div class="codeLabel">CSS</div>
+		<textarea id="css">html { color: red}</textarea>
+	</div>
+	<div id="JSContainer"class="codeContainer">
+		<div class="codeLabel">JS</div>
+		<textarea id="js">document.getElementById("test").innerHTML="It's working!";</textarea>
+	</div>
+	<div id="ResultContainer"class="codeContainer">
+		<div class="codeLabel">Result</div>
+		<iframe id="resultFrame"></iframe>
+
+	</div>
+
+</div>
+
+	
+
+
+<script>
+	var windowHeight=$(window).height();
+	var menuBarHeight=$("#menuBar").height();
+	var codeContainerHeight= windowHeight-menuBarHeight;
+
+	$(".codeContainer").height(codeContainerHeight+"px");
+	
+			$(".toggle").click(function() {
+
+
+				$(this).toggleClass("selected");
+
+				var activeDiv = $(this).html();
+
+				$("#"+activeDiv+"Container").toggle();	
+
+				var showingDivs=$(".codeContainer").filter(function() {
+
+					return($(this).css("display")!="none");
+
+							}).length;
+
+					var width= 100/showingDivs;
+
+					$(".codeContainer").width(width+"%");		
+
+			});
+
+
+			$('#runButton').click(function() {
+
+	
+			$("iframe").contents().find("html").html('<style>'+$("#css").val()+'</style>'+$("#html").val());
+
+//document.getElementById("resultFrame").contentWindow.eval($("#js").val());
+
+			});
+
+		$(document).delegate('textarea', 'keydown', function(e) {
+			var keyCode = e.keyCode || e.which;
+
+			if (keyCode == 9) {
+			e.preventDefault();
+			var start = $(this).get(0).selectionStart;
+			var end = $(this).get(0).selectionEnd;
+
+			// set textarea value to: text before caret + tab + text after caret
+			$(this).val($(this).val().substring(0, start)
+			            + "\t"
+			            + $(this).val().substring(end));
+
+			// put caret at right position again
+			$(this).get(0).selectionStart =
+			$(this).get(0).selectionEnd = start + 1;
+			}
+			});
+		
+</script>
+
+
+</body>
+</html>
